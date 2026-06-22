@@ -1,0 +1,18 @@
+# ============================================================
+# run.mac
+# Simple GPS test: gamma beam through the cylinder
+# ============================================================
+/analysis/setFileName ../ROOT/gamma_test2.root
+/gps/particle gamma
+
+/gps/ene/type Mono
+/gps/ene/mono 1 MeV
+
+/gps/pos/type Point
+/gps/pos/centre 0 0 -20 cm
+
+/gps/direction 0 0 1
+
+/tracking/verbose 0
+
+/run/beamOn 100
