@@ -1,0 +1,20 @@
+/analysis/setFileName ../ROOT/ph_5.root
+
+/gps/particle opticalphoton
+
+/gps/ene/type Mono
+/gps/ene/mono 2.92 eV
+
+/gps/pos/type Point
+/gps/pos/centre 0 0 -499 mm
+
+# Not straight along the cylinder axis.
+# This lets the photon hit the core/cladding boundary.
+/gps/direction 0.3 0 0.954
+
+# Perpendicular to the direction above.
+/gps/polarization 0 1 0
+
+/tracking/verbose 0
+
+/run/beamOn 5

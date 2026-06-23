@@ -1,0 +1,16 @@
+/analysis/setFileName ../ROOT/ph_1000.root
+
+/gps/particle opticalphoton
+
+/gps/ene/type Mono
+/gps/ene/mono 2.92 eV
+
+/gps/pos/type Point
+/gps/pos/centre 0 0 -499 mm 
+/gps/ang/type iso 
+/gps/polarization 0.0 0.0 0.0 
+
+
+/tracking/verbose 0
+
+/run/beamOn 10

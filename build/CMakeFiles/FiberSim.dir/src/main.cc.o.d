@@ -606,4 +606,7 @@ CMakeFiles/FiberSim.dir/src/main.cc.o: \
  /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4ProductionCutsTable.hh \
  /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4MaterialCutsCouple.hh \
  /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4ProductionCuts.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4MCCIndexConversionTable.hh
+ /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4MCCIndexConversionTable.hh \
+ /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4OpticalPhysics.hh \
+ /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4OpticalParameters.hh \
+ /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4OpticalParameters.hh

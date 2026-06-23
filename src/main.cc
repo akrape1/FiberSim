@@ -5,6 +5,8 @@
 #include "G4UImanager.hh"
 
 #include "FTFP_BERT.hh"
+#include "G4OpticalPhysics.hh"
+#include "G4OpticalParameters.hh"
 
 int main(int argc, char** argv)
 {
@@ -12,7 +14,26 @@ int main(int argc, char** argv)
         G4RunManagerFactory::CreateRunManager(G4RunManagerType::Default);
 
     runManager->SetUserInitialization(new DetectorConstruction());
-    runManager->SetUserInitialization(new FTFP_BERT);
+
+    // ------------------------------------------------------------
+    // Physics list
+    // ------------------------------------------------------------
+    auto physicsList = new FTFP_BERT;
+
+    // Add optical photon processes:
+    //   - G4OpBoundary: reflection/refraction/TIR at material boundaries
+    //   - G4OpAbsorption: if ABSLENGTH is defined
+    //   - G4OpRayleigh: if RAYLEIGH is defined
+    //   - etc.
+    auto opticalPhysics = new G4OpticalPhysics();
+    physicsList->RegisterPhysics(opticalPhysics);
+
+    // Optional debugging controls for optical physics
+    auto opticalParams = G4OpticalParameters::Instance();
+    opticalParams->SetVerboseLevel(1);
+    opticalParams->SetBoundaryVerboseLevel(1);
+
+    runManager->SetUserInitialization(physicsList);
 
     // In multithreaded Geant4, user actions go through ActionInitialization.
     runManager->SetUserInitialization(new ActionInitialization());

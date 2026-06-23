@@ -18,9 +18,6 @@ target_include_directories(FiberSim PRIVATE include)
 
 target_link_libraries(FiberSim PRIVATE ${Geant4_LIBRARIES})
 
-set(MACRO_FILES
-    run.mac
-)
 
 foreach(_macro ${MACRO_FILES})
     configure_file(
