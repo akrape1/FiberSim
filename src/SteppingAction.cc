@@ -28,42 +28,28 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
     const G4double edep = step->GetTotalEnergyDeposit();
     const G4double stepLength = step->GetStepLength();
 
-    // ------------------------------------------------------------
     // Event-level totals over all volumes
-    // ------------------------------------------------------------
-
+    // 
     fEventAction->AddEnergyDeposit(edep);
     fEventAction->AddStepLength(stepLength);
 
-    // ------------------------------------------------------------
     // Event ID
-    // ------------------------------------------------------------
-
     auto event = G4RunManager::GetRunManager()->GetCurrentEvent();
     const G4int eventID = event ? event->GetEventID() : -1;
 
-    // ------------------------------------------------------------
     // Track / particle information
-    // ------------------------------------------------------------
-
     auto particle = track->GetParticleDefinition();
 
     const G4int trackID = track->GetTrackID();
     const G4int parentID = track->GetParentID();
     const G4int stepNumber = track->GetCurrentStepNumber();
 
-    // PDG particle code:
-    // gamma = 22, electron = 11, positron = -11, proton = 2212, etc.
+    // PDG particle code
+    // gamma = 22 is the big one
     const G4int pdgCode = particle->GetPDGEncoding();
-
     const G4String particleName = particle->GetParticleName();
 
-    // ------------------------------------------------------------
-    // Creator process
-    //
-    // For primary particles, GetCreatorProcess() is null.
-    // ------------------------------------------------------------
-
+    // Creator process - not really needed for low E optical sims
     G4String creatorProcessName = "Primary";
 
     const G4VProcess* creatorProcess = track->GetCreatorProcess();
@@ -72,13 +58,7 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
         creatorProcessName = creatorProcess->GetProcessName();
     }
 
-    // ------------------------------------------------------------
-    // Volume information at the pre-step point
-    //
-    // We only store one volume name. No separate logical/physical volume,
-    // no material name, and no copy number.
-    // ------------------------------------------------------------
-
+    //gets name of volume when step begins so can see location and edeps
     G4String volumeName = "OutOfWorld";
 
     auto touchable = preStepPoint->GetTouchableHandle();
@@ -93,40 +73,13 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
         }
     }
 
-    // ------------------------------------------------------------
-    // Step-level quantities
-    // ------------------------------------------------------------
-
+    //time and kinetic energy at start of step
     const G4double globalTime = preStepPoint->GetGlobalTime();
     const G4double localTime = preStepPoint->GetLocalTime();
 
-    const G4double kineticEnergy = preStepPoint->GetKineticEnergy();
+    const G4double kinE = preStepPoint->GetKineticEnergy();
 
-    // ------------------------------------------------------------
-    // Fill step-level ntuple
-    //
-    // Ntuple 1 is "Steps".
-    //
-    // Column layout:
-    //
-    //  0  eventID
-    //  1  trackID
-    //  2  parentID
-    //  3  stepNumber
-    //  4  pdgCode
-    //  5  particleName
-    //  6  creatorProcessName
-    //  7  volumeName
-    //  8  xPre [mm]
-    //  9  yPre [mm]
-    // 10  zPre [mm]
-    // 11  globalTime [ns]
-    // 12  localTime [ns]
-    // 13  kineticEnergy [MeV]
-    // 14  edep [MeV]
-    // 15  stepLength [mm]
-    // ------------------------------------------------------------
-
+    //fill the Ntuple with all this info under 'Steps'
     analysisManager->FillNtupleIColumn(1, 0, eventID);
     analysisManager->FillNtupleIColumn(1, 1, trackID);
     analysisManager->FillNtupleIColumn(1, 2, parentID);
@@ -145,8 +98,8 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
     analysisManager->FillNtupleDColumn(1, 11, globalTime / ns);
     analysisManager->FillNtupleDColumn(1, 12, localTime / ns);
 
-    analysisManager->FillNtupleDColumn(1, 13, kineticEnergy / MeV);
-    analysisManager->FillNtupleDColumn(1, 14, edep / MeV);
+    analysisManager->FillNtupleDColumn(1, 13, kinE / eV);
+    analysisManager->FillNtupleDColumn(1, 14, edep / eV);
     analysisManager->FillNtupleDColumn(1, 15, stepLength / mm);
 
     analysisManager->AddNtupleRow(1);

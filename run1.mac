@@ -1,18 +1,19 @@
-# ============================================================
-# run.mac
-# Simple GPS test: gamma beam through the cylinder
-# ============================================================
-/analysis/setFileName ../ROOT/gamma_test2.root
+#optical sim for gammas in the fiber
+/analysis/setFileName ../ROOT/ph_test1.root
 /gps/particle gamma
 
+#TDR says 425 nm light -> 2.92 eV photons
 /gps/ene/type Mono
-/gps/ene/mono 1 MeV
+/gps/ene/mono 2.92 eV
 
+#starting at bottom of cylinder
 /gps/pos/type Point
-/gps/pos/centre 0 0 -20 cm
+/gps/pos/centre 0 0 -500 mm
 
+#fired in +z direction
 /gps/direction 0 0 1
 
+#don't need tracking since we have root file
 /tracking/verbose 0
 
-/run/beamOn 100
+/run/beamOn 1000

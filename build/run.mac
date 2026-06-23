@@ -1,44 +1,25 @@
-# ============================================================
-# run.mac
-# Simple GPS test: one geantino through the cylinder
-# ============================================================
+#test macro with a geantino for geometry checks
 
-# ------------------------------------------------------------
-# Particle type
-# ------------------------------------------------------------
+#i can't turn off getting a root file so just gonna scrap this one
+/analysis/setFileName ../ROOT/nullTest.root
+
+#geantino is test particle with no physical properties
 /gps/particle geantino
 
-# ------------------------------------------------------------
-# Particle energy
-# ------------------------------------------------------------
+#energy doesn't matter for geantino
 /gps/energy 1 GeV
 
-# ------------------------------------------------------------
-# Source position
-#
-# Cylinder is centered at origin.
-# Cylinder length is 10 cm, so it spans z = -5 cm to +5 cm.
-# Start particle upstream at z = -20 cm.
-# ------------------------------------------------------------
+#set the position to launch geantino
+#cylinder goes from -500 to +500 mm in z direction
 /gps/pos/type Point
-/gps/pos/centre 0 0 -20 cm
+/gps/pos/centre 0 0 0 mm
 
-# ------------------------------------------------------------
-# Direction
-#
-# Shoot along +z, through the center of the cylinder.
-# ------------------------------------------------------------
-/gps/direction 0 0 1
 
-# ------------------------------------------------------------
-# Verbosity
-#
-# tracking/verbose 1 prints step-by-step tracking.
-# Useful for checking that the particle enters/leaves volumes.
-# ------------------------------------------------------------
+# Shoot along +x to check cladding and core
+/gps/direction 1 0 0
+
+#gives step by step tracking
 /tracking/verbose 1
 
-# ------------------------------------------------------------
-# Run
-# ------------------------------------------------------------
+#tells how many events we want to simulate
 /run/beamOn 1
