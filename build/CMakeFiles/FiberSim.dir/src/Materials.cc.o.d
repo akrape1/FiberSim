@@ -1,8 +1,7 @@
-CMakeFiles/FiberSim.dir/src/DetectorConstruction.cc.o: \
- /home/hxd5bc/sum26/FiberSim/src/DetectorConstruction.cc \
+CMakeFiles/FiberSim.dir/src/Materials.cc.o: \
+ /home/hxd5bc/sum26/FiberSim/src/Materials.cc \
  /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/x86_64-conda-linux-gnu/sysroot/usr/include/stdc-predef.h \
- /home/hxd5bc/sum26/FiberSim/include/DetectorConstruction.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4VUserDetectorConstruction.hh \
+ /home/hxd5bc/sum26/FiberSim/include/Materials.hh \
  /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/globals.hh \
  /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4ios.hh \
  /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4Types.hh \
@@ -243,18 +242,17 @@ CMakeFiles/FiberSim.dir/src/DetectorConstruction.cc.o: \
  /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/bits/parse_numbers.h \
  /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/bits/std_mutex.h \
  /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/bits/unique_lock.h \
+ /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4Material.hh \
+ /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4Element.hh \
+ /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4ElementTable.hh \
  /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/vector \
  /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/bits/stl_uninitialized.h \
  /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/bits/stl_vector.h \
  /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/bits/stl_bvector.h \
  /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/bits/vector.tcc \
- /home/hxd5bc/sum26/FiberSim/include/Materials.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/globals.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4Material.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4Element.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4ElementTable.hh \
  /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4ElementVector.hh \
  /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4IonisParamElm.hh \
+ /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/globals.hh \
  /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4Isotope.hh \
  /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4IsotopeVector.hh \
  /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4IonisParamMat.hh \
@@ -288,85 +286,5 @@ CMakeFiles/FiberSim.dir/src/DetectorConstruction.cc.o: \
  /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4NistMaterialBuilder.hh \
  /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4Pow.hh \
  /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4Exp.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4Box.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4GeomTypes.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4GeomConfig.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4CSGSolid.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4VSolid.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/geomdefs.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4ThreeVector.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Vector/ThreeVector.h \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Vector/defs.h \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Vector/ThreeVector.icc \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4VSolid.icc \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4Polyhedron.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/HepPolyhedron.h \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4TwoVector.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Vector/TwoVector.h \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Vector/TwoVector.icc \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4Point3D.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Geometry/Point3D.h \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Geometry/defs.h \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Geometry/BasicVector3D.h \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4Normal3D.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Geometry/Normal3D.h \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4Transform3D.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Geometry/Transform3D.h \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Geometry/Transform3D.icc \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Vector/Rotation.h \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Vector/RotationInterfaces.h \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Vector/LorentzVector.h \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Vector/LorentzVector.icc \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Vector/ZMxpv.h \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Vector/AxisAngle.h \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Vector/AxisAngle.icc \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Vector/RotationInterfaces.icc \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Vector/RotationX.h \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Vector/RotationX.icc \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Vector/RotationY.h \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Vector/RotationY.icc \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Vector/RotationZ.h \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Vector/RotationZ.icc \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Vector/Rotation.icc \
- /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Geometry/Vector3D.h \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4Visible.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4Visible.icc \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4Box.icc \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4Tubs.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4Tubs.icc \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4LogicalVolume.hh \
- /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/memory \
- /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/bits/stl_raw_storage_iter.h \
- /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/bits/align.h \
- /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/bits/unique_ptr.h \
- /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/bits/shared_ptr.h \
- /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/bits/shared_ptr_base.h \
- /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/bits/allocated_ptr.h \
- /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/ext/concurrence.h \
- /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/bits/shared_ptr_atomic.h \
- /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/bits/atomic_base.h \
- /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/bits/atomic_lockfree_defines.h \
- /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/backward/auto_ptr.h \
- /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/pstl/glue_memory_defs.h \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4Region.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4GeomSplitter.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/geomwdefs.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4AutoLock.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4Threading.hh \
- /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/chrono \
- /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/condition_variable \
- /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/future \
- /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/bits/atomic_futex.h \
- /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/atomic \
- /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/bits/std_function.h \
- /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/bits/std_thread.h \
- /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/thread \
- /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/bits/this_thread_sleep.h \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4Region.icc \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4VPhysicalVolume.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4RotationMatrix.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4VPhysicalVolume.icc \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4LogicalVolume.icc \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4PVPlacement.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4SystemOfUnits.hh \
- /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4ThreeVector.hh
+ /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4MaterialPropertiesTable.hh \
+ /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4SystemOfUnits.hh

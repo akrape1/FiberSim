@@ -201,6 +201,30 @@ src/EventAction.cc.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiberSim.dir/build.make CMakeFiles/FiberSim.dir/src/EventAction.cc.s
 .PHONY : src/EventAction.cc.s
 
+src/Materials.o: src/Materials.cc.o
+.PHONY : src/Materials.o
+
+# target to build an object file
+src/Materials.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiberSim.dir/build.make CMakeFiles/FiberSim.dir/src/Materials.cc.o
+.PHONY : src/Materials.cc.o
+
+src/Materials.i: src/Materials.cc.i
+.PHONY : src/Materials.i
+
+# target to preprocess a source file
+src/Materials.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiberSim.dir/build.make CMakeFiles/FiberSim.dir/src/Materials.cc.i
+.PHONY : src/Materials.cc.i
+
+src/Materials.s: src/Materials.cc.s
+.PHONY : src/Materials.s
+
+# target to generate assembly for a file
+src/Materials.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/FiberSim.dir/build.make CMakeFiles/FiberSim.dir/src/Materials.cc.s
+.PHONY : src/Materials.cc.s
+
 src/PrimaryGeneratorAction.o: src/PrimaryGeneratorAction.cc.o
 .PHONY : src/PrimaryGeneratorAction.o
 
@@ -315,6 +339,9 @@ help:
 	@echo "... src/EventAction.o"
 	@echo "... src/EventAction.i"
 	@echo "... src/EventAction.s"
+	@echo "... src/Materials.o"
+	@echo "... src/Materials.i"
+	@echo "... src/Materials.s"
 	@echo "... src/PrimaryGeneratorAction.o"
 	@echo "... src/PrimaryGeneratorAction.i"
 	@echo "... src/PrimaryGeneratorAction.s"

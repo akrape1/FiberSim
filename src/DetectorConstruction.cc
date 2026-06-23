@@ -1,4 +1,5 @@
 #include "DetectorConstruction.hh"
+#include "Materials.hh"
 
 #include "G4Box.hh"
 #include "G4Tubs.hh"
@@ -14,9 +15,9 @@
 DetectorConstruction::DetectorConstruction()
 {}
 
-
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {
+/*
    //get NIST materials for air and core
     auto nist = G4NistManager::Instance();
 
@@ -25,7 +26,12 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
     // Dummy material for cladding for now
     G4Material* clad = nist->FindOrBuildMaterial("G4_TEFLON");
+*/
+    auto materials = Materials::GetInstance();
 
+    G4Material* sty = materials->GetMaterial("PolystyreneFiber");
+    G4Material* clad = materials->GetMaterial("PMMA");
+    G4Material* air = materials->GetMaterial("G4_AIR");
 
     // G4Box uses half-lengths so this gives a 2.5 m cube.
     G4double worldSizeX = 1.25 * m;
@@ -60,7 +66,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     );
 
     //G4Tubs has inner and out radius and half-height
-    G4double fiberRad   = 1.4 * mm;
+    G4double fiberDiam  = 1.4 * mm;
+    G4double fiberRad  = 0.5 * fiberDiam;
     G4double coreRad    = 0.97 * fiberRad;
     G4double halfHeight = 500.0 * mm;
 

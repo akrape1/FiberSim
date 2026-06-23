@@ -11,6 +11,7 @@ add_executable(FiberSim
     src/RunAction.cc
     src/EventAction.cc
     src/SteppingAction.cc
+    src/Materials.cc
 )
 
 target_include_directories(FiberSim PRIVATE include)

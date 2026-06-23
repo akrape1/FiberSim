@@ -28366,3 +28366,141 @@ events:
         
       exitCode: 2
 ...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/home/hxd5bc/miniconda3/envs/mu2e/share/cmake-4.3/Modules/FindHDF5.cmake:409 (try_compile)"
+      - "/home/hxd5bc/miniconda3/envs/mu2e/share/cmake-4.3/Modules/FindHDF5.cmake:785 (_HDF5_test_regular_compiler_C)"
+      - "/home/hxd5bc/miniconda3/envs/mu2e/share/cmake-4.3/Modules/CMakeFindDependencyMacro.cmake:93 (find_package)"
+      - "/home/hxd5bc/miniconda3/envs/mu2e/share/cmake-4.3/Modules/CMakeFindDependencyMacro.cmake:125 (__find_dependency_common)"
+      - "/home/hxd5bc/miniconda3/envs/mu2e/lib/cmake/Geant4/Geant4Config.cmake:329 (find_dependency)"
+      - "CMakeLists.txt:4 (find_package)"
+    directories:
+      source: "/home/hxd5bc/sum26/FiberSim/build/CMakeFiles/CMakeScratch/TryCompile-ohx39P"
+      binary: "/home/hxd5bc/sum26/FiberSim/build/CMakeFiles/CMakeScratch/TryCompile-ohx39P"
+    cmakeVariables:
+      CMAKE_CXX_STDLIB_MODULES_JSON: ""
+      CMAKE_C_FLAGS: "-march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /home/hxd5bc/miniconda3/envs/mu2e/include"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: "-Wl,-O2 -Wl,--sort-common -Wl,--as-needed -Wl,-z,relro -Wl,-z,now -Wl,--disable-new-dtags -Wl,--gc-sections -Wl,--allow-shlib-undefined -Wl,-rpath,/home/hxd5bc/miniconda3/envs/mu2e/lib -Wl,-rpath-link,/home/hxd5bc/miniconda3/envs/mu2e/lib -L/home/hxd5bc/miniconda3/envs/mu2e/lib"
+      CMAKE_MODULE_PATH: "/home/hxd5bc/miniconda3/envs/mu2e/lib/cmake/Geant4/Modules"
+    buildResult:
+      variable: "HDF5_C_COMPILER_NO_INTERROGATE"
+      cached: true
+      stdout: |
+        Change Dir: '/home/hxd5bc/sum26/FiberSim/build/CMakeFiles/CMakeScratch/TryCompile-ohx39P'
+        
+        Run Build Command(s): /home/hxd5bc/miniconda3/envs/mu2e/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_974eb/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_974eb.dir/build.make CMakeFiles/cmTC_974eb.dir/build
+        gmake[1]: Entering directory '/sfs/gpfs/tardis/home/hxd5bc/sum26/FiberSim/build/CMakeFiles/CMakeScratch/TryCompile-ohx39P'
+        Building C object CMakeFiles/cmTC_974eb.dir/cmake_hdf5_test.c.o
+        /home/hxd5bc/miniconda3/envs/mu2e/bin/x86_64-conda-linux-gnu-cc   -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /home/hxd5bc/miniconda3/envs/mu2e/include  -o CMakeFiles/cmTC_974eb.dir/cmake_hdf5_test.c.o -c /home/hxd5bc/sum26/FiberSim/build/CMakeFiles/hdf5/cmake_hdf5_test.c
+        Linking C executable cmTC_974eb
+        /home/hxd5bc/miniconda3/envs/mu2e/bin/cmake -E cmake_link_script CMakeFiles/cmTC_974eb.dir/link.txt --verbose=1
+        /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/bin/../libexec/gcc/x86_64-conda-linux-gnu/14.3.0/ld: CMakeFiles/cmTC_974eb.dir/cmake_hdf5_test.c.o: in function `main':
+        cmake_hdf5_test.c:(.text.startup.main+0x15): undefined reference to `H5check_version'
+        /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/bin/../libexec/gcc/x86_64-conda-linux-gnu/14.3.0/ld: cmake_hdf5_test.c:(.text.startup.main+0x1b): undefined reference to `H5open'
+        /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/bin/../libexec/gcc/x86_64-conda-linux-gnu/14.3.0/ld: cmake_hdf5_test.c:(.text.startup.main+0x31): undefined reference to `H5Fcreate'
+        collect2: error: ld returned 1 exit status
+        /home/hxd5bc/miniconda3/envs/mu2e/bin/x86_64-conda-linux-gnu-cc -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /home/hxd5bc/miniconda3/envs/mu2e/include  -Wl,-O2 -Wl,--sort-common -Wl,--as-needed -Wl,-z,relro -Wl,-z,now -Wl,--disable-new-dtags -Wl,--gc-sections -Wl,--allow-shlib-undefined -Wl,-rpath,/home/hxd5bc/miniconda3/envs/mu2e/lib -Wl,-rpath-link,/home/hxd5bc/miniconda3/envs/mu2e/lib -L/home/hxd5bc/miniconda3/envs/mu2e/lib  CMakeFiles/cmTC_974eb.dir/cmake_hdf5_test.c.o -o cmTC_974eb
+        gmake[1]: *** [CMakeFiles/cmTC_974eb.dir/build.make:102: cmTC_974eb] Error 1
+        gmake[1]: Leaving directory '/sfs/gpfs/tardis/home/hxd5bc/sum26/FiberSim/build/CMakeFiles/CMakeScratch/TryCompile-ohx39P'
+        gmake: *** [Makefile:134: cmTC_974eb/fast] Error 2
+        
+      exitCode: 2
+...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/home/hxd5bc/miniconda3/envs/mu2e/share/cmake-4.3/Modules/FindHDF5.cmake:409 (try_compile)"
+      - "/home/hxd5bc/miniconda3/envs/mu2e/share/cmake-4.3/Modules/FindHDF5.cmake:785 (_HDF5_test_regular_compiler_C)"
+      - "/home/hxd5bc/miniconda3/envs/mu2e/share/cmake-4.3/Modules/CMakeFindDependencyMacro.cmake:93 (find_package)"
+      - "/home/hxd5bc/miniconda3/envs/mu2e/share/cmake-4.3/Modules/CMakeFindDependencyMacro.cmake:125 (__find_dependency_common)"
+      - "/home/hxd5bc/miniconda3/envs/mu2e/lib/cmake/Geant4/Geant4Config.cmake:329 (find_dependency)"
+      - "CMakeLists.txt:4 (find_package)"
+    directories:
+      source: "/home/hxd5bc/sum26/FiberSim/build/CMakeFiles/CMakeScratch/TryCompile-Hgz53D"
+      binary: "/home/hxd5bc/sum26/FiberSim/build/CMakeFiles/CMakeScratch/TryCompile-Hgz53D"
+    cmakeVariables:
+      CMAKE_CXX_STDLIB_MODULES_JSON: ""
+      CMAKE_C_FLAGS: "-march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /home/hxd5bc/miniconda3/envs/mu2e/include"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: "-Wl,-O2 -Wl,--sort-common -Wl,--as-needed -Wl,-z,relro -Wl,-z,now -Wl,--disable-new-dtags -Wl,--gc-sections -Wl,--allow-shlib-undefined -Wl,-rpath,/home/hxd5bc/miniconda3/envs/mu2e/lib -Wl,-rpath-link,/home/hxd5bc/miniconda3/envs/mu2e/lib -L/home/hxd5bc/miniconda3/envs/mu2e/lib"
+      CMAKE_MODULE_PATH: "/home/hxd5bc/miniconda3/envs/mu2e/lib/cmake/Geant4/Modules"
+    buildResult:
+      variable: "HDF5_C_COMPILER_NO_INTERROGATE"
+      cached: true
+      stdout: |
+        Change Dir: '/home/hxd5bc/sum26/FiberSim/build/CMakeFiles/CMakeScratch/TryCompile-Hgz53D'
+        
+        Run Build Command(s): /home/hxd5bc/miniconda3/envs/mu2e/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_92593/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_92593.dir/build.make CMakeFiles/cmTC_92593.dir/build
+        gmake[1]: Entering directory '/sfs/gpfs/tardis/home/hxd5bc/sum26/FiberSim/build/CMakeFiles/CMakeScratch/TryCompile-Hgz53D'
+        Building C object CMakeFiles/cmTC_92593.dir/cmake_hdf5_test.c.o
+        /home/hxd5bc/miniconda3/envs/mu2e/bin/x86_64-conda-linux-gnu-cc   -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /home/hxd5bc/miniconda3/envs/mu2e/include  -o CMakeFiles/cmTC_92593.dir/cmake_hdf5_test.c.o -c /home/hxd5bc/sum26/FiberSim/build/CMakeFiles/hdf5/cmake_hdf5_test.c
+        Linking C executable cmTC_92593
+        /home/hxd5bc/miniconda3/envs/mu2e/bin/cmake -E cmake_link_script CMakeFiles/cmTC_92593.dir/link.txt --verbose=1
+        /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/bin/../libexec/gcc/x86_64-conda-linux-gnu/14.3.0/ld: CMakeFiles/cmTC_92593.dir/cmake_hdf5_test.c.o: in function `main':
+        cmake_hdf5_test.c:(.text.startup.main+0x15): undefined reference to `H5check_version'
+        /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/bin/../libexec/gcc/x86_64-conda-linux-gnu/14.3.0/ld: cmake_hdf5_test.c:(.text.startup.main+0x1b): undefined reference to `H5open'
+        /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/bin/../libexec/gcc/x86_64-conda-linux-gnu/14.3.0/ld: cmake_hdf5_test.c:(.text.startup.main+0x31): undefined reference to `H5Fcreate'
+        collect2: error: ld returned 1 exit status
+        /home/hxd5bc/miniconda3/envs/mu2e/bin/x86_64-conda-linux-gnu-cc -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /home/hxd5bc/miniconda3/envs/mu2e/include  -Wl,-O2 -Wl,--sort-common -Wl,--as-needed -Wl,-z,relro -Wl,-z,now -Wl,--disable-new-dtags -Wl,--gc-sections -Wl,--allow-shlib-undefined -Wl,-rpath,/home/hxd5bc/miniconda3/envs/mu2e/lib -Wl,-rpath-link,/home/hxd5bc/miniconda3/envs/mu2e/lib -L/home/hxd5bc/miniconda3/envs/mu2e/lib  CMakeFiles/cmTC_92593.dir/cmake_hdf5_test.c.o -o cmTC_92593
+        gmake[1]: *** [CMakeFiles/cmTC_92593.dir/build.make:102: cmTC_92593] Error 1
+        gmake[1]: Leaving directory '/sfs/gpfs/tardis/home/hxd5bc/sum26/FiberSim/build/CMakeFiles/CMakeScratch/TryCompile-Hgz53D'
+        gmake: *** [Makefile:134: cmTC_92593/fast] Error 2
+        
+      exitCode: 2
+...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/home/hxd5bc/miniconda3/envs/mu2e/share/cmake-4.3/Modules/FindHDF5.cmake:409 (try_compile)"
+      - "/home/hxd5bc/miniconda3/envs/mu2e/share/cmake-4.3/Modules/FindHDF5.cmake:785 (_HDF5_test_regular_compiler_C)"
+      - "/home/hxd5bc/miniconda3/envs/mu2e/share/cmake-4.3/Modules/CMakeFindDependencyMacro.cmake:93 (find_package)"
+      - "/home/hxd5bc/miniconda3/envs/mu2e/share/cmake-4.3/Modules/CMakeFindDependencyMacro.cmake:125 (__find_dependency_common)"
+      - "/home/hxd5bc/miniconda3/envs/mu2e/lib/cmake/Geant4/Geant4Config.cmake:329 (find_dependency)"
+      - "CMakeLists.txt:4 (find_package)"
+    directories:
+      source: "/home/hxd5bc/sum26/FiberSim/build/CMakeFiles/CMakeScratch/TryCompile-2adknJ"
+      binary: "/home/hxd5bc/sum26/FiberSim/build/CMakeFiles/CMakeScratch/TryCompile-2adknJ"
+    cmakeVariables:
+      CMAKE_CXX_STDLIB_MODULES_JSON: ""
+      CMAKE_C_FLAGS: "-march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /home/hxd5bc/miniconda3/envs/mu2e/include"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: "-Wl,-O2 -Wl,--sort-common -Wl,--as-needed -Wl,-z,relro -Wl,-z,now -Wl,--disable-new-dtags -Wl,--gc-sections -Wl,--allow-shlib-undefined -Wl,-rpath,/home/hxd5bc/miniconda3/envs/mu2e/lib -Wl,-rpath-link,/home/hxd5bc/miniconda3/envs/mu2e/lib -L/home/hxd5bc/miniconda3/envs/mu2e/lib"
+      CMAKE_MODULE_PATH: "/home/hxd5bc/miniconda3/envs/mu2e/lib/cmake/Geant4/Modules"
+    buildResult:
+      variable: "HDF5_C_COMPILER_NO_INTERROGATE"
+      cached: true
+      stdout: |
+        Change Dir: '/home/hxd5bc/sum26/FiberSim/build/CMakeFiles/CMakeScratch/TryCompile-2adknJ'
+        
+        Run Build Command(s): /home/hxd5bc/miniconda3/envs/mu2e/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_d5c52/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_d5c52.dir/build.make CMakeFiles/cmTC_d5c52.dir/build
+        gmake[1]: Entering directory '/sfs/gpfs/tardis/home/hxd5bc/sum26/FiberSim/build/CMakeFiles/CMakeScratch/TryCompile-2adknJ'
+        Building C object CMakeFiles/cmTC_d5c52.dir/cmake_hdf5_test.c.o
+        /home/hxd5bc/miniconda3/envs/mu2e/bin/x86_64-conda-linux-gnu-cc   -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /home/hxd5bc/miniconda3/envs/mu2e/include  -o CMakeFiles/cmTC_d5c52.dir/cmake_hdf5_test.c.o -c /home/hxd5bc/sum26/FiberSim/build/CMakeFiles/hdf5/cmake_hdf5_test.c
+        Linking C executable cmTC_d5c52
+        /home/hxd5bc/miniconda3/envs/mu2e/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d5c52.dir/link.txt --verbose=1
+        /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/bin/../libexec/gcc/x86_64-conda-linux-gnu/14.3.0/ld: CMakeFiles/cmTC_d5c52.dir/cmake_hdf5_test.c.o: in function `main':
+        cmake_hdf5_test.c:(.text.startup.main+0x15): undefined reference to `H5check_version'
+        /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/bin/../libexec/gcc/x86_64-conda-linux-gnu/14.3.0/ld: cmake_hdf5_test.c:(.text.startup.main+0x1b): undefined reference to `H5open'
+        /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/bin/../libexec/gcc/x86_64-conda-linux-gnu/14.3.0/ld: cmake_hdf5_test.c:(.text.startup.main+0x31): undefined reference to `H5Fcreate'
+        collect2: error: ld returned 1 exit status
+        /home/hxd5bc/miniconda3/envs/mu2e/bin/x86_64-conda-linux-gnu-cc -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /home/hxd5bc/miniconda3/envs/mu2e/include  -Wl,-O2 -Wl,--sort-common -Wl,--as-needed -Wl,-z,relro -Wl,-z,now -Wl,--disable-new-dtags -Wl,--gc-sections -Wl,--allow-shlib-undefined -Wl,-rpath,/home/hxd5bc/miniconda3/envs/mu2e/lib -Wl,-rpath-link,/home/hxd5bc/miniconda3/envs/mu2e/lib -L/home/hxd5bc/miniconda3/envs/mu2e/lib  CMakeFiles/cmTC_d5c52.dir/cmake_hdf5_test.c.o -o cmTC_d5c52
+        gmake[1]: *** [CMakeFiles/cmTC_d5c52.dir/build.make:102: cmTC_d5c52] Error 1
+        gmake[1]: Leaving directory '/sfs/gpfs/tardis/home/hxd5bc/sum26/FiberSim/build/CMakeFiles/CMakeScratch/TryCompile-2adknJ'
+        gmake: *** [Makefile:134: cmTC_d5c52/fast] Error 2
+        
+      exitCode: 2
+...

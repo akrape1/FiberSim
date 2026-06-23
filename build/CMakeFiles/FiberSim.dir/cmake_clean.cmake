@@ -6,6 +6,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/FiberSim.dir/src/DetectorConstruction.cc.o.d"
   "CMakeFiles/FiberSim.dir/src/EventAction.cc.o"
   "CMakeFiles/FiberSim.dir/src/EventAction.cc.o.d"
+  "CMakeFiles/FiberSim.dir/src/Materials.cc.o"
+  "CMakeFiles/FiberSim.dir/src/Materials.cc.o.d"
   "CMakeFiles/FiberSim.dir/src/PrimaryGeneratorAction.cc.o"
   "CMakeFiles/FiberSim.dir/src/PrimaryGeneratorAction.cc.o.d"
   "CMakeFiles/FiberSim.dir/src/RunAction.cc.o"

@@ -359,6 +359,7 @@ CMakeFiles/FiberSim.dir/src/DetectorConstruction.cc.o: /home/hxd5bc/sum26/FiberS
   /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/templates.hh \
   /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/tls.hh \
   /home/hxd5bc/sum26/FiberSim/include/DetectorConstruction.hh \
+  /home/hxd5bc/sum26/FiberSim/include/Materials.hh \
   /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/algorithm \
   /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/atomic \
   /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/backward/auto_ptr.h \
@@ -3317,6 +3318,8 @@ CMakeFiles/FiberSim.dir/src/EventAction.cc.o:
 
 /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Random/RandEngine.h:
 
+/home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Random/RandChiSquare.icc:
+
 /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4NistManager.hh:
 
 /home/hxd5bc/miniconda3/envs/mu2e/lib/libG4vis_management.so:
@@ -4035,6 +4038,8 @@ CMakeFiles/FiberSim.dir/src/PrimaryGeneratorAction.cc.o:
 
 /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/limits:
 
+/home/hxd5bc/sum26/FiberSim/include/Materials.hh:
+
 /home/hxd5bc/miniconda3/envs/mu2e/include/Geant4/G4LogicalVolume.hh:
 
 /sfs/gpfs/tardis/home/hxd5bc/miniconda3/envs/mu2e/lib/gcc/x86_64-conda-linux-gnu/14.3.0/include/c++/cerrno:
@@ -4586,5 +4591,3 @@ CMakeFiles/FiberSim.dir/src/ActionInitialization.cc.o:
 /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Random/RandBreitWigner.h:
 
 /home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Random/RandBreitWigner.icc:
-
-/home/hxd5bc/miniconda3/envs/mu2e/include/CLHEP/Random/RandChiSquare.icc:
