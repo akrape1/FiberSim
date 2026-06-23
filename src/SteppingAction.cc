@@ -20,6 +20,7 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
     auto analysisManager = G4AnalysisManager::Instance();
 
     auto track = step->GetTrack();
+    auto particle = track->GetParticleDefinition();
 
     auto preStepPoint = step->GetPreStepPoint();
 
@@ -29,7 +30,6 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
     const G4double stepLength = step->GetStepLength();
 
     // Event-level totals over all volumes
-    // 
     fEventAction->AddEnergyDeposit(edep);
     fEventAction->AddStepLength(stepLength);
 
@@ -38,48 +38,49 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
     const G4int eventID = event ? event->GetEventID() : -1;
 
     // Track / particle information
-    auto particle = track->GetParticleDefinition();
-
     const G4int trackID = track->GetTrackID();
     const G4int parentID = track->GetParentID();
     const G4int stepNumber = track->GetCurrentStepNumber();
 
-    // PDG particle code
-    // gamma = 22 is the big one
     const G4int pdgCode = particle->GetPDGEncoding();
     const G4String particleName = particle->GetParticleName();
 
-    // Creator process - not really needed for low E optical sims
+    // Creator process
     G4String creatorProcessName = "Primary";
 
     const G4VProcess* creatorProcess = track->GetCreatorProcess();
-    if (creatorProcess)
-    {
+    if (creatorProcess) {
         creatorProcessName = creatorProcess->GetProcessName();
     }
 
-    //gets name of volume when step begins so can see location and edeps
+    // Volume at start of step
     G4String volumeName = "OutOfWorld";
 
     auto touchable = preStepPoint->GetTouchableHandle();
 
-    if (touchable)
-    {
+    if (touchable) {
         auto volume = touchable->GetVolume();
 
-        if (volume)
-        {
+        if (volume) {
             volumeName = volume->GetName();
         }
     }
 
-    //time and kinetic energy at start of step
+    // Time and kinetic energy at start of step
     const G4double globalTime = preStepPoint->GetGlobalTime();
     const G4double localTime = preStepPoint->GetLocalTime();
-
     const G4double kinE = preStepPoint->GetKineticEnergy();
 
-    //fill the Ntuple with all this info under 'Steps'
+    // Decide whether to kill this optical photon after recording this step
+    const G4bool killOpticalPhoton =
+        particleName == "opticalphoton" &&
+        (
+            stepNumber > 10000 ||
+            track->GetTrackLength() > 5000.0*mm ||
+            globalTime > 100.0*ns
+        );
+
+    // Fill Steps ntuple
     analysisManager->FillNtupleIColumn(1, 0, eventID);
     analysisManager->FillNtupleIColumn(1, 1, trackID);
     analysisManager->FillNtupleIColumn(1, 2, parentID);
@@ -103,4 +104,8 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
     analysisManager->FillNtupleDColumn(1, 15, stepLength / mm);
 
     analysisManager->AddNtupleRow(1);
+
+    if (killOpticalPhoton) {
+        track->SetTrackStatus(fStopAndKill);
+    }
 }
