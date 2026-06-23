@@ -14,99 +14,111 @@
 DetectorConstruction::DetectorConstruction()
 {}
 
-// This function builds the geometry.
+
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {
-    // ------------------------------------------------------------
-    // 1. Get materials from the NIST database
-    // ------------------------------------------------------------
-
+   //get NIST materials for air and core
     auto nist = G4NistManager::Instance();
 
-    G4Material* air = nist->FindOrBuildMaterial("G4_AIR");
-    G4Material* aluminum = nist->FindOrBuildMaterial("G4_Al");
+    G4Material* air  = nist->FindOrBuildMaterial("G4_AIR");
+    G4Material* sty  = nist->FindOrBuildMaterial("G4_POLYSTYRENE");
 
-    // ------------------------------------------------------------
-    // 2. Build the world volume
-    // ------------------------------------------------------------
-    //
-    // Geant4 boxes use half-lengths.
-    // So this is a 1 m x 1 m x 1 m box.
+    // Dummy material for cladding for now
+    G4Material* clad = nist->FindOrBuildMaterial("G4_TEFLON");
 
-    G4double worldSizeX = 0.5 * m;
-    G4double worldSizeY = 0.5 * m;
-    G4double worldSizeZ = 0.5 * m;
 
-    auto solidWorld = new G4Box(
-        "WorldSolid",
+    // G4Box uses half-lengths so this gives a 2.5 m cube.
+    G4double worldSizeX = 1.25 * m;
+    G4double worldSizeY = 1.25 * m;
+    G4double worldSizeZ = 1.25 * m;
+    
+    //creates the object
+    auto solWorld = new G4Box(
+        "WorldSol",
         worldSizeX,
         worldSizeY,
         worldSizeZ
     );
-
-    auto logicWorld = new G4LogicalVolume(
-        solidWorld,
+    
+    //sets its logical properties (material)
+    auto logWorld = new G4LogicalVolume(
+        solWorld,
         air,
-        "WorldLogical"
+        "WorldLog"
     );
 
+    //places it in the world
     auto physWorld = new G4PVPlacement(
-        nullptr,              // no rotation
-        G4ThreeVector(),      // position at origin
-        logicWorld,           // logical volume
-        "WorldPhysical",      // name
-        nullptr,              // no mother volume
-        false,                // no boolean operation
-        0,                    // copy number
-        true                  // check overlaps
+        nullptr,
+        G4ThreeVector(),
+        logWorld,
+        "WorldPhys",
+        nullptr,
+        false,
+        0,
+        true
     );
 
-    // ------------------------------------------------------------
-    // 3. Build the cylinder
-    // ------------------------------------------------------------
-    //
-    // G4Tubs arguments:
-    //
-    // inner radius
-    // outer radius
-    // half-length in z
-    // starting angle
-    // spanning angle
-    //
-    // This cylinder has:
-    // radius = 5 cm
-    // full length = 10 cm
+    //G4Tubs has inner and out radius and half-height
+    G4double fiberRad   = 1.4 * mm;
+    G4double coreRad    = 0.97 * fiberRad;
+    G4double halfHeight = 500.0 * mm;
 
-    G4double innerRadius = 0.0 * cm;
-    G4double outerRadius = 5.0 * cm;
-    G4double halfLengthZ = 5.0 * cm;
-
-    auto solidCylinder = new G4Tubs(
-        "CylinderSolid",
-        innerRadius,
-        outerRadius,
-        halfLengthZ,
+    //we can make the cladding first as a solid cylinder
+    auto solClad = new G4Tubs(
+        "CladSol",
+        0.0 * mm, //inner radius argument
+        fiberRad,
+        halfHeight,
         0.0 * deg,
         360.0 * deg
     );
 
-    auto logicCylinder = new G4LogicalVolume(
-        solidCylinder,
-        aluminum,
-        "CylinderLogical"
+    auto logClad = new G4LogicalVolume(
+        solClad,
+        clad,
+        "CladLog"
     );
 
     new G4PVPlacement(
-        nullptr,              // no rotation
-        G4ThreeVector(),      // centered in world
-        logicCylinder,        // logical volume
-        "CylinderPhysical",   // name
-        logicWorld,           // mother volume
-        false,                // no boolean operation
-        0,                    // copy number
-        true                  // check overlaps
+        nullptr,
+        G4ThreeVector(),
+        logClad,
+        "Cladding",
+        logWorld,
+        false,
+        0,
+        true
     );
 
-    // Return the physical world volume.
+
+    //the core will be a daughter volume to the cladding to not worry about overlaps
+    auto solCore = new G4Tubs(
+        "CoreSol",
+        0.0 * mm,
+        coreRad,
+        halfHeight,
+        0.0 * deg,
+        360.0 * deg
+    );
+
+    auto logCore = new G4LogicalVolume(
+        solCore,
+        sty,
+        "CoreLog"
+    );
+    
+    //when we place it, any overlap with cladding gets replaced with core so effectively get solid core with cladding
+    new G4PVPlacement(
+        nullptr,
+        G4ThreeVector(),
+        logCore,
+        "Core",
+        logClad,
+        false,
+        0,
+        true
+    );
+
     return physWorld;
 }
