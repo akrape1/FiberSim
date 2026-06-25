@@ -1,39 +1,53 @@
 #include "EventAction.hh"
+#include "RunAction.hh"
 
 #include "G4AnalysisManager.hh"
 #include "G4Event.hh"
 #include "G4SystemOfUnits.hh"
 
-/*
-Events record the total step length and total energy deposited per event (particle generated)
-this allows us to not need to loop over each step and investigate
-*/
+EventAction::EventAction(RunAction* runAction)
+    : fRunAction(runAction),
+      fTotalEdep(0.0),
+      fTotalStepLength(0.0),
+      fReachedZStop(false)
+{}
+
 void EventAction::BeginOfEventAction(const G4Event*)
 {
-    fTotalEnergyDeposit = 0.0;
+    fTotalEdep = 0.0;
     fTotalStepLength = 0.0;
+    fReachedZStop = false;
 }
 
 void EventAction::EndOfEventAction(const G4Event* event)
 {
+    if (!fRunAction->RecordEvents()) {
+        return;
+    }
+
     auto analysisManager = G4AnalysisManager::Instance();
 
-    const G4int eventID = event->GetEventID();
+    const G4int eventID = event ? event->GetEventID() : -1;
 
-    // Ntuple 0 is "Events".
     analysisManager->FillNtupleIColumn(0, 0, eventID);
-    analysisManager->FillNtupleDColumn(0, 1, fTotalEnergyDeposit / eV);
+    analysisManager->FillNtupleDColumn(0, 1, fTotalEdep / eV);
     analysisManager->FillNtupleDColumn(0, 2, fTotalStepLength / mm);
+    analysisManager->FillNtupleIColumn(0, 3, fReachedZStop ? 1 : 0);
 
     analysisManager->AddNtupleRow(0);
 }
 
 void EventAction::AddEnergyDeposit(G4double edep)
 {
-    fTotalEnergyDeposit += edep;
+    fTotalEdep += edep;
 }
 
-void EventAction::AddStepLength(G4double length)
+void EventAction::AddStepLength(G4double stepLength)
 {
-    fTotalStepLength += length;
+    fTotalStepLength += stepLength;
+}
+
+void EventAction::MarkReachedZStop()
+{
+    fReachedZStop = true;
 }

@@ -1,5 +1,6 @@
 #include "SteppingAction.hh"
 #include "EventAction.hh"
+#include "RunAction.hh"
 
 #include "G4AnalysisManager.hh"
 #include "G4Step.hh"
@@ -11,49 +12,23 @@
 #include "G4SystemOfUnits.hh"
 #include "G4ThreeVector.hh"
 
-SteppingAction::SteppingAction(EventAction* eventAction)
-    : fEventAction(eventAction)
+SteppingAction::SteppingAction(EventAction* eventAction, RunAction* runAction)
+    : fEventAction(eventAction),
+      fRunAction(runAction)
 {}
 
 void SteppingAction::UserSteppingAction(const G4Step* step)
 {
-    auto analysisManager = G4AnalysisManager::Instance();
-
     auto track = step->GetTrack();
     auto particle = track->GetParticleDefinition();
 
     auto preStepPoint = step->GetPreStepPoint();
+    auto postStepPoint = step->GetPostStepPoint();
 
-    const G4ThreeVector prePosition = preStepPoint->GetPosition();
-
-    const G4double edep = step->GetTotalEnergyDeposit();
-    const G4double stepLength = step->GetStepLength();
-
-    // Event-level totals over all volumes
-    fEventAction->AddEnergyDeposit(edep);
-    fEventAction->AddStepLength(stepLength);
-
-    // Event ID
-    auto event = G4RunManager::GetRunManager()->GetCurrentEvent();
-    const G4int eventID = event ? event->GetEventID() : -1;
-
-    // Track / particle information
-    const G4int trackID = track->GetTrackID();
-    const G4int parentID = track->GetParentID();
-    const G4int stepNumber = track->GetCurrentStepNumber();
-
-    const G4int pdgCode = particle->GetPDGEncoding();
-    const G4String particleName = particle->GetParticleName();
-
-    // Creator process
-    G4String creatorProcessName = "Primary";
-
-    const G4VProcess* creatorProcess = track->GetCreatorProcess();
-    if (creatorProcess) {
-        creatorProcessName = creatorProcess->GetProcessName();
-    }
-
+    // ------------------------------------------------------------
     // Volume at start of step
+    // ------------------------------------------------------------
+
     G4String volumeName = "OutOfWorld";
 
     auto touchable = preStepPoint->GetTouchableHandle();
@@ -66,21 +41,92 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
         }
     }
 
+    // ------------------------------------------------------------
+    // Kill optical photons once they reach the world air volume.
+    //
+    // Since you do not generate photons in WorldPhys, this prevents
+    // saving air steps and stops the photon as soon as it starts a
+    // step in the world volume.
+    // ------------------------------------------------------------
+
+    const G4String particleName = particle->GetParticleName();
+
+    if (particleName == "opticalphoton" && volumeName == "WorldPhys") {
+        track->SetTrackStatus(fStopAndKill);
+        return;
+    }
+
+    // ------------------------------------------------------------
+    // Step quantities
+    // ------------------------------------------------------------
+
+    const G4ThreeVector prePosition = preStepPoint->GetPosition();
+    const G4ThreeVector postPosition = postStepPoint->GetPosition();
+
+    const G4double edep = step->GetTotalEnergyDeposit();
+    const G4double stepLength = step->GetStepLength();
+
+    // Event-level totals over recorded/non-world volumes.
+    // This must stay BEFORE the recordSteps toggle.
+    fEventAction->AddEnergyDeposit(edep);
+    fEventAction->AddStepLength(stepLength);
+
+    const G4double zStop = 500.0 * mm;
+
+    const G4bool reachedZStop =
+        particleName == "opticalphoton" &&
+        prePosition.z() < zStop &&
+        postPosition.z() >= zStop;
+
+    // ------------------------------------------------------------
+    // If Steps recording is disabled, still update event-level
+    // zStop information and kill the photon if needed.
+    // ------------------------------------------------------------
+
+    if (!fRunAction->RecordSteps()) {
+        if (reachedZStop) {
+            fEventAction->MarkReachedZStop();
+            track->SetTrackStatus(fStopAndKill);
+        }
+
+        return;
+    }
+
+    // ------------------------------------------------------------
+    // Everything below here only happens when recordSteps = true.
+    // ------------------------------------------------------------
+
+    auto analysisManager = G4AnalysisManager::Instance();
+
+    // Event ID
+    auto event = G4RunManager::GetRunManager()->GetCurrentEvent();
+    const G4int eventID = event ? event->GetEventID() : -1;
+
+    // Track / particle information
+    const G4int trackID = track->GetTrackID();
+    const G4int parentID = track->GetParentID();
+    const G4int stepNumber = track->GetCurrentStepNumber();
+
+    const G4int pdgCode = particle->GetPDGEncoding();
+
+    // Creator process
+    G4String creatorProcessName = "Primary";
+
+    const G4VProcess* creatorProcess = track->GetCreatorProcess();
+
+    if (creatorProcess) {
+        creatorProcessName = creatorProcess->GetProcessName();
+    }
+
     // Time and kinetic energy at start of step
     const G4double globalTime = preStepPoint->GetGlobalTime();
     const G4double localTime = preStepPoint->GetLocalTime();
     const G4double kinE = preStepPoint->GetKineticEnergy();
 
-    // Decide whether to kill this optical photon after recording this step
-    const G4bool killOpticalPhoton =
-        particleName == "opticalphoton" &&
-        (
-            stepNumber > 10000 ||
-            track->GetTrackLength() > 5000.0*mm ||
-            globalTime > 100.0*ns
-        );
-
+    // ------------------------------------------------------------
     // Fill Steps ntuple
+    // ------------------------------------------------------------
+
     analysisManager->FillNtupleIColumn(1, 0, eventID);
     analysisManager->FillNtupleIColumn(1, 1, trackID);
     analysisManager->FillNtupleIColumn(1, 2, parentID);
@@ -105,7 +151,8 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
 
     analysisManager->AddNtupleRow(1);
 
-    if (killOpticalPhoton) {
+    if (reachedZStop) {
+        fEventAction->MarkReachedZStop();
         track->SetTrackStatus(fStopAndKill);
     }
 }
