@@ -11,11 +11,34 @@
 #include "G4Event.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4ThreeVector.hh"
+#include "G4GenericMessenger.hh"
 
 SteppingAction::SteppingAction(EventAction* eventAction, RunAction* runAction)
     : fEventAction(eventAction),
-      fRunAction(runAction)
-{}
+      fRunAction(runAction),
+      fZStop(500.0 * mm),
+      fMessenger(nullptr)
+{
+    fMessenger = new G4GenericMessenger(
+        this,
+        "/fiber/",
+        "Fiber simulation runtime controls."
+    );
+
+    auto& zStopCmd = fMessenger->DeclarePropertyWithUnit(
+        "zStop",
+        "mm",
+        fZStop,
+        "Set z position where optical photons are marked as reaching the z-stop and killed."
+    );
+
+    zStopCmd.SetParameterName("zStop", false);
+}
+
+SteppingAction::~SteppingAction()
+{
+    delete fMessenger;
+}
 
 void SteppingAction::UserSteppingAction(const G4Step* step)
 {
@@ -71,12 +94,10 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
     fEventAction->AddEnergyDeposit(edep);
     fEventAction->AddStepLength(stepLength);
 
-    const G4double zStop = 500.0 * mm;
-
     const G4bool reachedZStop =
         particleName == "opticalphoton" &&
-        prePosition.z() < zStop &&
-        postPosition.z() >= zStop;
+        prePosition.z() < fZStop &&
+        postPosition.z() >= fZStop;
 
     // ------------------------------------------------------------
     // If Steps recording is disabled, still update event-level

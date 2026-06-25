@@ -1,4 +1,4 @@
-/analysis/setFileName ./ROOT/ph_1M.root
+/analysis/setFileName ./ROOT/1.8_mm_diam/ph_1M_300z_8.root
 
 #here's the seed command for reproducibility:
 #/random/setSeeds 12345 67890
@@ -13,7 +13,7 @@
 /gps/ene/mono 2.92 eV
 
 /gps/pos/type Point
-/gps/pos/centre 0 0 -499 mm 
+/gps/pos/centre 0 0 -500 mm 
 /gps/ang/type iso 
 /gps/ang/mintheta 90 deg
 /gps/ang/maxtheta 180 deg
@@ -22,5 +22,7 @@
 /gps/polarization 0.0 0.0 0.0 
 
 /tracking/verbose 0
+
+/fiber/zStop 300 mm
 
 /run/beamOn 1000000
