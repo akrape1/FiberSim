@@ -45,6 +45,8 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
     auto track = step->GetTrack();
     auto particle = track->GetParticleDefinition();
 
+    const G4String particleName = particle->GetParticleName();
+
     auto preStepPoint = step->GetPreStepPoint();
     auto postStepPoint = step->GetPostStepPoint();
 
@@ -72,11 +74,36 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
     // step in the world volume.
     // ------------------------------------------------------------
 
-    const G4String particleName = particle->GetParticleName();
-
     if (particleName == "opticalphoton" && volumeName == "WorldPhys") {
         track->SetTrackStatus(fStopAndKill);
         return;
+    }
+
+    // ------------------------------------------------------------
+    // Kill pathological optical photons.
+    //
+    // These are photons that bounce around for too many steps or
+    // accumulate an unreasonably long path length without reaching
+    // the z-stop or leaving the fiber.
+    //
+    // This happens before event totals / step recording so these
+    // runtime-poison photons do not pollute the analysis histograms.
+    // ------------------------------------------------------------
+
+    if (particleName == "opticalphoton") {
+        const G4int maxOpticalSteps = 10000;
+        const G4double maxOpticalTrackLength = 5000.0 * mm;
+
+        const G4bool tooManySteps =
+            track->GetCurrentStepNumber() > maxOpticalSteps;
+
+        const G4bool trackTooLong =
+            track->GetTrackLength() > maxOpticalTrackLength;
+
+        if (tooManySteps || trackTooLong) {
+            track->SetTrackStatus(fStopAndKill);
+            return;
+        }
     }
 
     // ------------------------------------------------------------
