@@ -47,6 +47,20 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
 
     const G4String particleName = particle->GetParticleName();
 
+    // ------------------------------------------------------------
+    // Record the initial generated position once per event.
+    //
+    // This uses the track vertex position, not the current step
+    // position, so it records where the photon was generated.
+    //
+    // This works even when recordSteps = false.
+    // ------------------------------------------------------------
+
+    if (particleName == "opticalphoton" &&
+        !fEventAction->HasRecordedInitialPosition()) {
+        fEventAction->RecordInitialPosition(track->GetVertexPosition());
+    }
+
     auto preStepPoint = step->GetPreStepPoint();
     auto postStepPoint = step->GetPostStepPoint();
 

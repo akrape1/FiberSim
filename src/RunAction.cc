@@ -52,6 +52,13 @@ RunAction::RunAction()
     analysisManager->CreateNtupleDColumn("totalStepLength_mm");
     analysisManager->CreateNtupleIColumn("reachedZStop");
 
+    // New initial-position columns
+    analysisManager->CreateNtupleDColumn("initialX_mm");
+    analysisManager->CreateNtupleDColumn("initialY_mm");
+    analysisManager->CreateNtupleDColumn("initialZ_mm");
+    analysisManager->CreateNtupleDColumn("initialR_mm");    // sqrt(x^2 + y^2 + z^2)
+    analysisManager->CreateNtupleDColumn("initialRho_mm");  // sqrt(x^2 + y^2)
+
     analysisManager->FinishNtuple();
 
     // ------------------------------------------------------------

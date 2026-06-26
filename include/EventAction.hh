@@ -3,14 +3,14 @@
 
 #include "G4UserEventAction.hh"
 #include "globals.hh"
+#include "G4ThreeVector.hh"
 
-class G4Event;
 class RunAction;
 
 class EventAction : public G4UserEventAction
 {
 public:
-    explicit EventAction(RunAction* runAction);
+    EventAction(RunAction* runAction);
     ~EventAction() override = default;
 
     void BeginOfEventAction(const G4Event* event) override;
@@ -21,13 +21,24 @@ public:
 
     void MarkReachedZStop();
 
+    void RecordInitialPosition(const G4ThreeVector& pos);
+    G4bool HasRecordedInitialPosition() const;
+
 private:
-    RunAction* fRunAction = nullptr;
+    RunAction* fRunAction;
 
     G4double fTotalEdep;
     G4double fTotalStepLength;
 
     G4bool fReachedZStop;
+
+    G4bool fHasRecordedInitialPosition;
+
+    G4double fInitialX;
+    G4double fInitialY;
+    G4double fInitialZ;
+    G4double fInitialR;
+    G4double fInitialRho;
 };
 
 #endif
