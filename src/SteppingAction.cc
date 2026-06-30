@@ -12,6 +12,9 @@
 #include "G4SystemOfUnits.hh"
 #include "G4ThreeVector.hh"
 #include "G4GenericMessenger.hh"
+#include "G4StepPoint.hh"
+#include "G4TouchableHandle.hh"
+#include "G4VPhysicalVolume.hh"
 
 SteppingAction::SteppingAction(EventAction* eventAction, RunAction* runAction)
     : fEventAction(eventAction),
@@ -29,7 +32,7 @@ SteppingAction::SteppingAction(EventAction* eventAction, RunAction* runAction)
         "zStop",
         "mm",
         fZStop,
-        "Set z position where optical photons are marked as reaching the z-stop and killed."
+        "Z position where photons are counted and killed."
     );
 
     zStopCmd.SetParameterName("zStop", false);
@@ -47,174 +50,190 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
 
     const G4String particleName = particle->GetParticleName();
 
-    // ------------------------------------------------------------
-    // Record the initial generated position once per event.
-    //
-    // This uses the track vertex position, not the current step
-    // position, so it records where the photon was generated.
-    //
-    // This works even when recordSteps = false.
-    // ------------------------------------------------------------
-
-    if (particleName == "opticalphoton" &&
-        !fEventAction->HasRecordedInitialPosition()) {
-        fEventAction->RecordInitialPosition(track->GetVertexPosition());
+    if (particleName != "opticalphoton") {
+        return;
     }
 
     auto preStepPoint = step->GetPreStepPoint();
     auto postStepPoint = step->GetPostStepPoint();
 
-    // ------------------------------------------------------------
-    // Volume at start of step
-    // ------------------------------------------------------------
+    const G4ThreeVector prePos = preStepPoint->GetPosition();
+    const G4ThreeVector postPos = postStepPoint->GetPosition();
 
+    /*
+     * Store initial photon info once, on the first step.
+     *
+     * This records:
+     *   initialRho_mm
+     *   initialPsi
+     *
+     * using the pre-step position, direction, and polarization.
+     */
+    if (track->GetCurrentStepNumber() == 1) {
+        fEventAction->SetInitialPhotonInfo(
+            preStepPoint->GetPosition(),
+            preStepPoint->GetMomentumDirection(),
+            preStepPoint->GetPolarization()
+        );
+    }
+
+    /*
+     * Volume at start of step.
+     *
+     * This restores the old behavior where photons are killed
+     * once they begin a step in WorldPhys.
+     */
     G4String volumeName = "OutOfWorld";
 
-    auto touchable = preStepPoint->GetTouchableHandle();
+    auto preTouchable = preStepPoint->GetTouchableHandle();
 
-    if (touchable) {
-        auto volume = touchable->GetVolume();
+    if (preTouchable) {
+        auto volume = preTouchable->GetVolume();
 
         if (volume) {
             volumeName = volume->GetName();
         }
     }
 
-    // ------------------------------------------------------------
-    // Kill optical photons once they reach the world air volume.
-    //
-    // Since you do not generate photons in WorldPhys, this prevents
-    // saving air steps and stops the photon as soon as it starts a
-    // step in the world volume.
-    // ------------------------------------------------------------
-
-    if (particleName == "opticalphoton" && volumeName == "WorldPhys") {
+    /*
+     * Kill optical photons once they reach the world air volume.
+     *
+     * Since photons are not generated in WorldPhys, this prevents
+     * tracking and recording useless air steps.
+     */
+    if (volumeName == "WorldPhys") {
         track->SetTrackStatus(fStopAndKill);
         return;
     }
 
-    // ------------------------------------------------------------
-    // Kill pathological optical photons.
-    //
-    // These are photons that bounce around for too many steps or
-    // accumulate an unreasonably long path length without reaching
-    // the z-stop or leaving the fiber.
-    //
-    // This happens before event totals / step recording so these
-    // runtime-poison photons do not pollute the analysis histograms.
-    // ------------------------------------------------------------
+    /*
+     * Kill pathological photons before adding event totals.
+     *
+     * This keeps runtime-poison photons from contaminating
+     * totalStepLength_mm.
+     */
+    const G4int maxOpticalSteps = 10000;
+    const G4double maxOpticalTrackLength = 5000.0 * mm;
+    const G4double maxOpticalGlobalTime = 100.0 * ns;
 
-    if (particleName == "opticalphoton") {
-        const G4int maxOpticalSteps = 10000;
-        const G4double maxOpticalTrackLength = 5000.0 * mm;
+    const G4bool tooManySteps =
+        track->GetCurrentStepNumber() > maxOpticalSteps;
 
-        const G4bool tooManySteps =
-            track->GetCurrentStepNumber() > maxOpticalSteps;
+    const G4bool trackTooLong =
+        track->GetTrackLength() > maxOpticalTrackLength;
 
-        const G4bool trackTooLong =
-            track->GetTrackLength() > maxOpticalTrackLength;
+    const G4bool trackTooOld =
+        track->GetGlobalTime() > maxOpticalGlobalTime;
 
-        if (tooManySteps || trackTooLong) {
-            track->SetTrackStatus(fStopAndKill);
-            return;
-        }
-    }
-
-    // ------------------------------------------------------------
-    // Step quantities
-    // ------------------------------------------------------------
-
-    const G4ThreeVector prePosition = preStepPoint->GetPosition();
-    const G4ThreeVector postPosition = postStepPoint->GetPosition();
-
-    const G4double edep = step->GetTotalEnergyDeposit();
-    const G4double stepLength = step->GetStepLength();
-
-    // Event-level totals over recorded/non-world volumes.
-    // This must stay BEFORE the recordSteps toggle.
-    fEventAction->AddEnergyDeposit(edep);
-    fEventAction->AddStepLength(stepLength);
-
-    const G4bool reachedZStop =
-        particleName == "opticalphoton" &&
-        prePosition.z() < fZStop &&
-        postPosition.z() >= fZStop;
-
-    // ------------------------------------------------------------
-    // If Steps recording is disabled, still update event-level
-    // zStop information and kill the photon if needed.
-    // ------------------------------------------------------------
-
-    if (!fRunAction->RecordSteps()) {
-        if (reachedZStop) {
-            fEventAction->MarkReachedZStop();
-            track->SetTrackStatus(fStopAndKill);
-        }
-
+    if (tooManySteps || trackTooLong || trackTooOld) {
+        track->SetTrackStatus(fStopAndKill);
         return;
     }
 
-    // ------------------------------------------------------------
-    // Everything below here only happens when recordSteps = true.
-    // ------------------------------------------------------------
+    /*
+     * Kill photons that leave the geometry/world.
+     *
+     * If postStepPoint has no physical volume, the photon has left the world.
+     */
+    auto postTouchable = postStepPoint->GetTouchableHandle();
 
-    auto analysisManager = G4AnalysisManager::Instance();
-
-    // Event ID
-    auto event = G4RunManager::GetRunManager()->GetCurrentEvent();
-    const G4int eventID = event ? event->GetEventID() : -1;
-
-    // Track / particle information
-    const G4int trackID = track->GetTrackID();
-    const G4int parentID = track->GetParentID();
-    const G4int stepNumber = track->GetCurrentStepNumber();
-
-    const G4int pdgCode = particle->GetPDGEncoding();
-
-    // Creator process
-    G4String creatorProcessName = "Primary";
-
-    const G4VProcess* creatorProcess = track->GetCreatorProcess();
-
-    if (creatorProcess) {
-        creatorProcessName = creatorProcess->GetProcessName();
+    if (!postTouchable || !postTouchable->GetVolume()) {
+        track->SetTrackStatus(fStopAndKill);
+        return;
     }
 
-    // Time and kinetic energy at start of step
-    const G4double globalTime = preStepPoint->GetGlobalTime();
-    const G4double localTime = preStepPoint->GetLocalTime();
-    const G4double kinE = preStepPoint->GetKineticEnergy();
+    /*
+     * Add optical photon step length to the event-level total.
+     *
+     * This happens after the bad-track/world kills, so garbage steps
+     * do not inflate the path length.
+     */
+    fEventAction->AddStepLength(step->GetStepLength());
 
-    // ------------------------------------------------------------
-    // Fill Steps ntuple
-    // ------------------------------------------------------------
-
-    analysisManager->FillNtupleIColumn(1, 0, eventID);
-    analysisManager->FillNtupleIColumn(1, 1, trackID);
-    analysisManager->FillNtupleIColumn(1, 2, parentID);
-    analysisManager->FillNtupleIColumn(1, 3, stepNumber);
-
-    analysisManager->FillNtupleIColumn(1, 4, pdgCode);
-    analysisManager->FillNtupleSColumn(1, 5, particleName);
-
-    analysisManager->FillNtupleSColumn(1, 6, creatorProcessName);
-    analysisManager->FillNtupleSColumn(1, 7, volumeName);
-
-    analysisManager->FillNtupleDColumn(1, 8,  prePosition.x() / mm);
-    analysisManager->FillNtupleDColumn(1, 9,  prePosition.y() / mm);
-    analysisManager->FillNtupleDColumn(1, 10, prePosition.z() / mm);
-
-    analysisManager->FillNtupleDColumn(1, 11, globalTime / ns);
-    analysisManager->FillNtupleDColumn(1, 12, localTime / ns);
-
-    analysisManager->FillNtupleDColumn(1, 13, kinE / eV);
-    analysisManager->FillNtupleDColumn(1, 14, edep / eV);
-    analysisManager->FillNtupleDColumn(1, 15, stepLength / mm);
-
-    analysisManager->AddNtupleRow(1);
+    /*
+     * Check whether the photon reached the z-stop plane.
+     *
+     * This catches crossings from below to above:
+     *
+     *   prePos.z() < fZStop
+     *   postPos.z() >= fZStop
+     */
+    const G4bool reachedZStop =
+        prePos.z() < fZStop &&
+        postPos.z() >= fZStop;
 
     if (reachedZStop) {
+
+        fEventAction->SetFinalPhotonInfo(
+            postStepPoint->GetMomentumDirection(),
+            postStepPoint->GetPolarization()
+        );
+
         fEventAction->MarkReachedZStop();
+
         track->SetTrackStatus(fStopAndKill);
+        return;
+    }
+
+    /*
+     * Optional step-level output.
+     *
+     * This assumes your Steps ntuple is ntuple 1 and has columns matching
+     * the newer polarization-recording structure.
+     */
+    if (fRunAction->RecordSteps()) {
+
+        auto analysisManager = G4AnalysisManager::Instance();
+
+        const G4Event* event =
+            G4RunManager::GetRunManager()->GetCurrentEvent();
+
+        const G4int eventID = event ? event->GetEventID() : -1;
+        const G4int trackID = track->GetTrackID();
+        const G4int parentID = track->GetParentID();
+        const G4int stepNumber = track->GetCurrentStepNumber();
+
+        const G4ThreeVector momentumDirection =
+            postStepPoint->GetMomentumDirection();
+
+        const G4ThreeVector polarization =
+            postStepPoint->GetPolarization();
+
+        G4String processName = "none";
+
+        const G4VProcess* process =
+            postStepPoint->GetProcessDefinedStep();
+
+        if (process) {
+            processName = process->GetProcessName();
+        }
+
+        /*
+         * Ntuple 1: Steps
+         */
+        analysisManager->FillNtupleIColumn(1, 0, eventID);
+        analysisManager->FillNtupleIColumn(1, 1, trackID);
+        analysisManager->FillNtupleIColumn(1, 2, parentID);
+        analysisManager->FillNtupleIColumn(1, 3, stepNumber);
+
+        analysisManager->FillNtupleDColumn(1, 4, postPos.x() / mm);
+        analysisManager->FillNtupleDColumn(1, 5, postPos.y() / mm);
+        analysisManager->FillNtupleDColumn(1, 6, postPos.z() / mm);
+
+        analysisManager->FillNtupleDColumn(1, 7, step->GetStepLength() / mm);
+        analysisManager->FillNtupleDColumn(1, 8, track->GetTrackLength() / mm);
+        analysisManager->FillNtupleDColumn(1, 9, track->GetGlobalTime() / ns);
+
+        analysisManager->FillNtupleDColumn(1, 10, momentumDirection.x());
+        analysisManager->FillNtupleDColumn(1, 11, momentumDirection.y());
+        analysisManager->FillNtupleDColumn(1, 12, momentumDirection.z());
+
+        analysisManager->FillNtupleDColumn(1, 13, polarization.x());
+        analysisManager->FillNtupleDColumn(1, 14, polarization.y());
+        analysisManager->FillNtupleDColumn(1, 15, polarization.z());
+
+        analysisManager->FillNtupleSColumn(1, 16, processName);
+
+        analysisManager->AddNtupleRow(1);
     }
 }

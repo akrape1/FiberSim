@@ -1,69 +1,49 @@
 #include "EventAction.hh"
-#include "RunAction.hh"
 
 #include "G4AnalysisManager.hh"
 #include "G4Event.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4ThreeVector.hh"
 
 #include <cmath>
 
-EventAction::EventAction(RunAction* runAction)
-    : fRunAction(runAction),
-      fTotalEdep(0.0),
-      fTotalStepLength(0.0),
+EventAction::EventAction()
+    : fTotalStepLength(0.0),
       fReachedZStop(false),
-      fHasRecordedInitialPosition(false),
-      fInitialX(0.0),
-      fInitialY(0.0),
-      fInitialZ(0.0),
-      fInitialR(0.0),
-      fInitialRho(0.0)
+      fInitialRho(-999.0f),
+      fInitialPsi(-999.0f),
+      fFinalPsi(-999.0f),
+      fStoredInitialPhotonInfo(false)
 {}
 
 void EventAction::BeginOfEventAction(const G4Event*)
 {
-    fTotalEdep = 0.0;
     fTotalStepLength = 0.0;
 
     fReachedZStop = false;
 
-    fHasRecordedInitialPosition = false;
+    fInitialRho = -999.0f;
+    fInitialPsi = -999.0f;
+    fFinalPsi = -999.0f;
 
-    fInitialX = 0.0;
-    fInitialY = 0.0;
-    fInitialZ = 0.0;
-    fInitialR = 0.0;
-    fInitialRho = 0.0;
+    fStoredInitialPhotonInfo = false;
 }
 
 void EventAction::EndOfEventAction(const G4Event* event)
 {
-    if (!fRunAction->RecordEvents()) {
-        return;
-    }
-
     auto analysisManager = G4AnalysisManager::Instance();
 
     const G4int eventID = event->GetEventID();
 
-    // Ntuple 0: Events
     analysisManager->FillNtupleIColumn(0, 0, eventID);
-    analysisManager->FillNtupleDColumn(0, 1, fTotalEdep / eV);
-    analysisManager->FillNtupleDColumn(0, 2, fTotalStepLength / mm);
-    analysisManager->FillNtupleIColumn(0, 3, fReachedZStop ? 1 : 0);
+    analysisManager->FillNtupleIColumn(0, 1, fReachedZStop ? 1 : 0);
 
-    analysisManager->FillNtupleDColumn(0, 4, fInitialX / mm);
-    analysisManager->FillNtupleDColumn(0, 5, fInitialY / mm);
-    analysisManager->FillNtupleDColumn(0, 6, fInitialZ / mm);
-    analysisManager->FillNtupleDColumn(0, 7, fInitialR / mm);
-    analysisManager->FillNtupleDColumn(0, 8, fInitialRho / mm);
+    analysisManager->FillNtupleFColumn(0, 2, fTotalStepLength / mm);
+    analysisManager->FillNtupleFColumn(0, 3, fInitialRho);
+    analysisManager->FillNtupleFColumn(0, 4, fInitialPsi);
+    analysisManager->FillNtupleFColumn(0, 5, fFinalPsi);
 
     analysisManager->AddNtupleRow(0);
-}
-
-void EventAction::AddEnergyDeposit(G4double edep)
-{
-    fTotalEdep += edep;
 }
 
 void EventAction::AddStepLength(G4double stepLength)
@@ -76,31 +56,74 @@ void EventAction::MarkReachedZStop()
     fReachedZStop = true;
 }
 
-void EventAction::RecordInitialPosition(const G4ThreeVector& pos)
+void EventAction::SetInitialPhotonInfo(
+    const G4ThreeVector& position,
+    const G4ThreeVector& direction,
+    const G4ThreeVector& polarization
+)
 {
-    if (fHasRecordedInitialPosition) {
-        return;
-    }
+    if (fStoredInitialPhotonInfo) return;
 
-    fInitialX = pos.x();
-    fInitialY = pos.y();
-    fInitialZ = pos.z();
+    const G4double x = position.x();
+    const G4double y = position.y();
 
-    fInitialR = std::sqrt(
-        fInitialX*fInitialX +
-        fInitialY*fInitialY +
-        fInitialZ*fInitialZ
-    );
+    fInitialRho = static_cast<G4float>(std::sqrt(x*x + y*y) / mm);
+    fInitialPsi = ComputePsi(direction, polarization);
 
-    fInitialRho = std::sqrt(
-        fInitialX*fInitialX +
-        fInitialY*fInitialY
-    );
-
-    fHasRecordedInitialPosition = true;
+    fStoredInitialPhotonInfo = true;
 }
 
-G4bool EventAction::HasRecordedInitialPosition() const
+void EventAction::SetFinalPhotonInfo(
+    const G4ThreeVector& direction,
+    const G4ThreeVector& polarization
+)
 {
-    return fHasRecordedInitialPosition;
+    fFinalPsi = ComputePsi(direction, polarization);
+}
+
+G4float EventAction::ComputePsi(
+    const G4ThreeVector& direction,
+    const G4ThreeVector& polarization
+) const
+{
+    G4ThreeVector u = direction.unit();
+
+    // Remove any tiny numerical component parallel to momentum.
+    G4ThreeVector e = polarization - (polarization.dot(u)) * u;
+
+    if (e.mag2() == 0.0) {
+        return -999.0f;
+    }
+
+    e = e.unit();
+
+    G4ThreeVector zhat(0.0, 0.0, 1.0);
+    G4ThreeVector xhat(1.0, 0.0, 0.0);
+
+    G4ThreeVector a = zhat.cross(u);
+
+    // If photon is almost along z, zhat x u is tiny, so use xhat instead.
+    if (a.mag2() < 1.0e-12) {
+        a = xhat.cross(u);
+    }
+
+    a = a.unit();
+
+    G4ThreeVector b = u.cross(a).unit();
+
+    const G4double ea = e.dot(a);
+    const G4double eb = e.dot(b);
+
+    G4double psi = std::atan2(eb, ea);
+
+    // Linear polarization: psi and psi + pi are equivalent.
+    while (psi < 0.0) {
+        psi += CLHEP::pi;
+    }
+
+    while (psi >= CLHEP::pi) {
+        psi -= CLHEP::pi;
+    }
+
+    return static_cast<G4float>(psi);
 }

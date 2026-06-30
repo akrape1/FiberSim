@@ -6,7 +6,7 @@
 #include "G4Threading.hh"
 
 G4bool RunAction::fRecordEvents = true;
-G4bool RunAction::fRecordSteps  = true;
+G4bool RunAction::fRecordSteps  = false;
 
 RunAction::RunAction()
 {
@@ -45,19 +45,16 @@ RunAction::RunAction()
     // Ntuple 0: one row per event
     // ------------------------------------------------------------
 
+    // Ntuple 0: one row per event
     analysisManager->CreateNtuple("Events", "Event-level quantities");
 
-    analysisManager->CreateNtupleIColumn("eventID");
-    analysisManager->CreateNtupleDColumn("totalEdep_eV");
-    analysisManager->CreateNtupleDColumn("totalStepLength_mm");
-    analysisManager->CreateNtupleIColumn("reachedZStop");
+    analysisManager->CreateNtupleIColumn("eventID");             // 0
+    analysisManager->CreateNtupleIColumn("reachedZStop");        // 1
 
-    // New initial-position columns
-    analysisManager->CreateNtupleDColumn("initialX_mm");
-    analysisManager->CreateNtupleDColumn("initialY_mm");
-    analysisManager->CreateNtupleDColumn("initialZ_mm");
-    analysisManager->CreateNtupleDColumn("initialR_mm");    // sqrt(x^2 + y^2 + z^2)
-    analysisManager->CreateNtupleDColumn("initialRho_mm");  // sqrt(x^2 + y^2)
+    analysisManager->CreateNtupleFColumn("totalStepLength_mm");  // 2
+    analysisManager->CreateNtupleFColumn("initialRho_mm");       // 3
+    analysisManager->CreateNtupleFColumn("initialPsi");          // 4
+    analysisManager->CreateNtupleFColumn("finalPsi");            // 5
 
     analysisManager->FinishNtuple();
 

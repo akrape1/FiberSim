@@ -66,7 +66,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     );
 
     //G4Tubs has inner and out radius and half-height
-    G4double fiberDiam  = 1.4 * mm;
+    G4double fiberDiam  = 1.8 * mm;
     G4double fiberRad  = 0.5 * fiberDiam;
     G4double coreRad    = 0.97 * fiberRad;
     G4double halfHeight = 500.5 * mm;
