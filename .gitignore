@@ -1,0 +1,9 @@
+build/
+ROOT/
+analysis/
+checks/
+graphs/
+logs/
+
+batch.sbatch
+
